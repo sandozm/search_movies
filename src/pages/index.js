@@ -52,12 +52,13 @@ const Movies = () => {
       });
 
       setAlert(null);
-      setCurrentPage(1);
       setParams(formattedQueryString);
     } else {
       setMovies(null);
       setParams(null);
     }
+
+    setCurrentPage(1);
   };
 
   const searchMovies = async (query, page) => {
