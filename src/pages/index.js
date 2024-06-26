@@ -25,11 +25,23 @@ const Movies = () => {
     }
   }, [currentPage, params]);
 
-  const setPaginationForFavorites = useCallback(() => {
+  // Effet pour update la pagination des favoris
+  useEffect(() => {
+    if (!params) {
+      setPaginationForFavorites();
+    }
+  }, [favorites, params]);
+
+  const setPaginationForFavorites = () => {
     const totalPage = Math.ceil(favorites.length / 10);
-    setCurrentPage(1);
+    let newCurrentPage = currentPage;
+    if (currentPage > totalPage) {
+      newCurrentPage = Math.max(1, totalPage); // Réajuste currentPage si c'est trop grand
+    }
+
+    setCurrentPage(newCurrentPage);
     setTotalPages(totalPage || 1);
-  }, [favorites]);
+  };
 
   const onSearchMoviesSubmit = (formData) => {
     if (formData.searchTerm.trim().length) {
@@ -45,7 +57,6 @@ const Movies = () => {
     } else {
       setMovies(null);
       setParams(null);
-      setPaginationForFavorites();
     }
   };
 
