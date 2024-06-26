@@ -1,5 +1,11 @@
 import React from "react";
 import Button from "@/components/atoms/Button";
+import styled from "styled-components";
+
+const PaginationContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
 
 const Pagination = ({
   currentPage,
@@ -20,13 +26,19 @@ const Pagination = ({
   };
 
   return (
-    <div {...restProps}>
-      {currentPage !== 1 && <Button onClick={handlePrevious}>{"<"}</Button>}
+    <PaginationContainer {...restProps}>
+      {currentPage !== 1 && (
+        <Button onClick={handlePrevious} css="margin-right:16px;">
+          {"<"}
+        </Button>
+      )}
       <span>{`Page ${currentPage} sur ${totalPages}`}</span>
       {currentPage !== totalPages && (
-        <Button onClick={handleNext}>{">"}</Button>
+        <Button onClick={handleNext} css="margin-left:16px;">
+          {">"}
+        </Button>
       )}
-    </div>
+    </PaginationContainer>
   );
 };
 

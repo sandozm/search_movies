@@ -1,14 +1,25 @@
 import React from "react";
+import styled from "styled-components";
+
+const StyledSelect = styled.select`
+  padding: 6px 16px;
+  font-size: ${(props) => props.theme.font.size.md};
+  border: 1px solid ${(props) => props.theme.colors.gray.dark};
+  border-radius: 4px;
+  outline: none;
+`;
+
+const Option = styled.option``;
 
 const Select = ({ options, value, onChange, ...restProps }) => {
   return (
-    <select value={value} onChange={onChange} {...restProps}>
+    <StyledSelect value={value} onChange={onChange} {...restProps}>
       {options.map((option) => (
-        <option key={option.value} value={option.value}>
+        <Option key={option.value} value={option.value}>
           {option.label}
-        </option>
+        </Option>
       ))}
-    </select>
+    </StyledSelect>
   );
 };
 

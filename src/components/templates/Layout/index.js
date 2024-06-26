@@ -1,16 +1,21 @@
 import React from "react";
+import styled from "styled-components";
 import Head from "next/head";
 
-const SearchPageTemplate = ({ title, children }) => {
+const Container = styled.div`
+  padding: 32px;
+`;
+
+const Layout = ({ title, children }) => {
   return (
-    <div>
+    <Container>
       <Head>
         <title>{title}</title>
       </Head>
       <h1>{title}</h1>
       {children}
-    </div>
+    </Container>
   );
 };
 
-export default SearchPageTemplate;
+export default Layout;

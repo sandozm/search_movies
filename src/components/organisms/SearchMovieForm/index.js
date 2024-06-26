@@ -1,7 +1,51 @@
 import React, { useState } from "react";
+import styled from "styled-components";
 import Button from "@/components/atoms/Button";
 import Input from "@/components/atoms/Input";
 import Select from "@/components/atoms/Select";
+
+const SearchContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px;
+  border-radius: 4px;
+  margin: 16px auto;
+  position: relative;
+
+  @media (${(props) => props.theme.screen.sm}) {
+    width: 600px;
+  }
+`;
+
+const InputContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  @media (${(props) => props.theme.screen.sm}) {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+`;
+
+const Label = styled.label`
+  @media (${(props) => props.theme.screen.sm}) {
+    position: absolute;
+    top: -8px;
+  }
+`;
+
+const Form = styled.form`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  @media (${(props) => props.theme.screen.sm}) {
+    flex-direction: row;
+  }
+`;
 
 const SearchMovieForm = ({ onSearchMoviesSubmit, ...restProps }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -18,10 +62,10 @@ const SearchMovieForm = ({ onSearchMoviesSubmit, ...restProps }) => {
   };
 
   return (
-    <div {...restProps}>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="s">Rechercher :</label>
+    <SearchContainer {...restProps}>
+      <Form onSubmit={handleSubmit}>
+        <InputContainer>
+          <Label htmlFor="s">Rechercher :</Label>
           <Input
             type="text"
             id="s"
@@ -29,9 +73,9 @@ const SearchMovieForm = ({ onSearchMoviesSubmit, ...restProps }) => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-        </div>
-        <div>
-          <label htmlFor="type">Type :</label>
+        </InputContainer>
+        <InputContainer>
+          <Label htmlFor="type">Type :</Label>
           <Select
             id="type"
             name="type"
@@ -44,9 +88,9 @@ const SearchMovieForm = ({ onSearchMoviesSubmit, ...restProps }) => {
               { value: "episode", label: "Episode" },
             ]}
           ></Select>
-        </div>
-        <div>
-          <label htmlFor="y">Année :</label>
+        </InputContainer>
+        <InputContainer>
+          <Label htmlFor="y">Année :</Label>
           <Input
             type="number"
             min="1900"
@@ -57,11 +101,11 @@ const SearchMovieForm = ({ onSearchMoviesSubmit, ...restProps }) => {
             value={year}
             onChange={(e) => setYear(e.target.value)}
           />
-        </div>
+        </InputContainer>
 
         <Button type="submit">Rechercher</Button>
-      </form>
-    </div>
+      </Form>
+    </SearchContainer>
   );
 };
 
