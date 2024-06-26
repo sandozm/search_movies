@@ -27,7 +27,7 @@ const MovieCard = ({ movie, onToggleFavorite, isFavorite, ...restProps }) => {
           {movie.Year}
         </div>
         <Button onClick={() => onToggleFavorite(movie)}>
-          {isFavorite(movie) ? "Retirer des favoris" : "Ajouter aux favoris"}
+          {isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
         </Button>
       </footer>
     </div>
