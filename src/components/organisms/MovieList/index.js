@@ -26,7 +26,9 @@ const List = styled.ul`
   }
 `;
 
-const Item = styled.ul``;
+const Item = styled.ul`
+  width: 100%;
+`;
 
 const MovieList = ({ movies, onToggleFavorite, isFavorite, ...restProps }) => {
   return (
