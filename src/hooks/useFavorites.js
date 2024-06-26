@@ -19,7 +19,7 @@ const useFavorites = () => {
     (movie) => {
       let updatedFavorites;
 
-      if (favorites.some((fav) => fav.imdbID === movie.imdbID)) {
+      if (isFavorite(movie)) {
         updatedFavorites = favorites.filter(
           (fav) => fav.imdbID !== movie.imdbID
         );
