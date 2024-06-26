@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { fetchMovies } from "@/services/omdbService";
 import MovieList from "@/components/organisms/MovieList";
 import Layout from "@/components/templates/Layout";
@@ -15,31 +15,23 @@ const Movies = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [params, setParams] = useState(null);
   const [alert, setAlert] = useState(null);
-  const [isLoading, setIsLoading] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const { favorites, toggleFavorite, isFavorite } = useFavorites();
-
-  // Effet pour mettre à jour la pagination lorsque les favoris sont visibles
-  useEffect(() => {
-    if (!params) {
-      setPaginationForFavorites();
-    }
-  }, [params]);
 
   // Effet pour gérer le changement de page courante
   useEffect(() => {
     if (params) {
       searchMovies(params, currentPage);
     }
-  }, [currentPage]);
+  }, [currentPage, params]);
 
-  const setPaginationForFavorites = () => {
+  const setPaginationForFavorites = useCallback(() => {
     const totalPage = Math.ceil(favorites.length / 10);
-    setParams(null);
     setCurrentPage(1);
     setTotalPages(totalPage || 1);
-  };
+  }, [favorites]);
 
-  const onSearchMoviesSubmit = async (formData) => {
+  const onSearchMoviesSubmit = (formData) => {
     if (formData.searchTerm.trim().length) {
       const formattedQueryString = generateQueryString({
         s: formData.searchTerm,
@@ -50,9 +42,9 @@ const Movies = () => {
       setAlert(null);
       setCurrentPage(1);
       setParams(formattedQueryString);
-      await searchMovies(formattedQueryString, currentPage);
     } else {
       setMovies(null);
+      setParams(null);
       setPaginationForFavorites();
     }
   };
@@ -63,12 +55,12 @@ const Movies = () => {
       const data = await fetchMovies(query, page);
       if (data.Response.toLowerCase() === "true") {
         setMovies(data.Search);
+        setTotalPages(Math.ceil(data.totalResults / 10));
       } else {
         setAlert({ text: data.Error, type: "info" });
         setMovies(null);
         setTotalPages(1);
       }
-      setTotalPages(Math.ceil(data.totalResults / 10));
     } catch (error) {
       setAlert({ text: error.message, type: "error" });
       setMovies(null);
