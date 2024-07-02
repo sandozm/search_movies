@@ -1,5 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
-import { fetchMovies } from "@/services/omdbService";
+import { useState, useEffect } from "react";
 import MovieList from "@/components/organisms/MovieList";
 import Layout from "@/components/templates/Layout";
 import SearchMovieForm from "@/components/organisms/SearchMovieForm";
@@ -8,15 +7,15 @@ import useFavorites from "@/hooks/useFavorites";
 import generateQueryString from "@/utils/generateQueryString";
 import Alert from "@/components/atoms/Alert";
 import Loading from "@/components/atoms/Loading";
+import useGetMovies from "@/hooks/useGetMovies";
 
 const Movies = () => {
-  const [movies, setMovies] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [params, setParams] = useState(null);
-  const [alert, setAlert] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
   const { favorites, toggleFavorite, isFavorite } = useFavorites();
+  const { movies, resetMovies, getMovies, isLoading, error, resetError } =
+    useGetMovies();
 
   // Effet pour gérer le changement de page courante
   useEffect(() => {
@@ -51,34 +50,19 @@ const Movies = () => {
         y: formData.year,
       });
 
-      setAlert(null);
       setParams(formattedQueryString);
     } else {
-      setMovies(null);
+      resetMovies();
       setParams(null);
     }
-
+    resetError();
     setCurrentPage(1);
   };
 
   const searchMovies = async (query, page) => {
-    try {
-      setIsLoading(true);
-      const data = await fetchMovies(query, page);
-      if (data.Response.toLowerCase() === "true") {
-        setMovies(data.Search);
-        setTotalPages(Math.ceil(data.totalResults / 10));
-      } else {
-        setAlert({ text: data.Error, type: "info" });
-        setMovies(null);
-        setTotalPages(1);
-      }
-    } catch (error) {
-      setAlert({ text: error.message, type: "error" });
-      setMovies(null);
-      setTotalPages(1);
-    } finally {
-      setIsLoading(false);
+    const result = await getMovies(query, page);
+    if (!error) {
+      setTotalPages(result);
     }
   };
 
@@ -86,7 +70,7 @@ const Movies = () => {
     <Layout title="Recherche de film">
       {isLoading && <Loading />}
       <SearchMovieForm onSearchMoviesSubmit={onSearchMoviesSubmit} />
-      {alert === null ? (
+      {error === null ? (
         <>
           <MovieList
             movies={
@@ -104,7 +88,7 @@ const Movies = () => {
           />
         </>
       ) : (
-        <Alert text={alert.text} type={alert.type} />
+        <Alert text={error.text} type={error.type} />
       )}
     </Layout>
   );
